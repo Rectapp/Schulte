@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.GameActivity">
+    <item
+        android:id="@+id/action_change"
+        android:title="刷新"
+        android:icon="@drawable/ic_apps"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/action_replay"
+        android:title="刷新"
+        android:icon="@drawable/ic_replay"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/action_rank"
+        android:title="榜单"
+        android:icon="@drawable/ic_rank"
+        app:showAsAction="always"
+        />
+</menu>
