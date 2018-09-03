@@ -7,12 +7,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
 import com.rectapp.schulte.core.SchulteView;
 import com.rectapp.schulte.model.Game;
 import com.rectapp.schulte.util.SPUtil;
@@ -35,7 +37,7 @@ public class MainUI extends AppCompatActivity {
         schulteView = findViewById(R.id.schulte_view);
         schulteView.setOnSuccessListener((column, time) -> {
             if (column * column * 1000 - time < 0) {
-                new AlertDialog.Builder(context).setMessage(R.string.retry).setPositiveButton(R.string.sure, (dialog, which) -> {
+                new AlertDialog.Builder(context).setTitle(time/1000f+"s").setMessage(R.string.retry).setPositiveButton(R.string.sure, (dialog, which) -> {
                     replayGame(column - 2);
                 }).setNegativeButton(R.string.cancel, null).show();
             } else {
@@ -49,16 +51,25 @@ public class MainUI extends AppCompatActivity {
                             SchulteApplication.rank.rankList.remove(game);
                         }
                         SchulteApplication.rank.rankList.add(0, game);
+                        new AlertDialog.Builder(context).setTitle(time/1000f+"s").setMessage(R.string.refresh_best).setPositiveButton(R.string.show, (dialog, which) -> {
+                            showRank();
+                        }).setNegativeButton(R.string.next, (dialog, which) -> replayGame(column - 1)).show();
+                    } else {
+                        new AlertDialog.Builder(context).setTitle(time/1000f+"s").setMessage(R.string.complete).setPositiveButton(R.string.replay, (dialog, which) -> {
+                            replayGame();
+                        }).setNegativeButton(R.string.cancel, null).show();
                     }
                 } else {
                     SchulteApplication.rank.rankList.add(0, new Game(column, time, System.currentTimeMillis()));
+                    new AlertDialog.Builder(context).setMessage(R.string.refresh_best).setPositiveButton(R.string.show, (dialog, which) -> {
+                        showRank();
+                    }).setNegativeButton(R.string.next, (dialog, which) -> replayGame(column - 1)).show();
                 }
-                new AlertDialog.Builder(context).setMessage(R.string.refresh_best).setPositiveButton(R.string.show, (dialog, which) -> {
-                    showRank();
-                }).setNegativeButton(R.string.next, (dialog, which) -> replayGame(column - 1)).show();
+                SPUtil.put(context,"rank",new Gson().toJson(SchulteApplication.rank));
             }
         });
     }
+
 
     public long getLevelBestTime(int level) {
         for (Game game : SchulteApplication.rank.rankList) {
@@ -105,8 +116,8 @@ public class MainUI extends AppCompatActivity {
             BaseQuickAdapter rankAdapter = new BaseQuickAdapter<Game, BaseViewHolder>(R.layout.item_rank, SchulteApplication.rank.rankList) {
                 @Override
                 protected void convert(BaseViewHolder helper, Game item) {
-                    helper.setText(R.id.tv_level, String.valueOf(item.level*item.level));
-                    helper.setText(R.id.tv_time, String.valueOf(item.time));
+                    helper.setText(R.id.tv_level, String.valueOf(item.level * item.level));
+                    helper.setText(R.id.tv_time, item.time/1000f+" s");
                     helper.setText(R.id.tv_date, new Date(item.date).toLocaleString());
                 }
             };
@@ -115,6 +126,38 @@ public class MainUI extends AppCompatActivity {
             new AlertDialog.Builder(context).setView(rankView).show();
         } else {
             Snackbar.make(schulteView, R.string.no_history, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    //退出时的时间
+    private long mExitTime;
+    private boolean isCloseApp;
+
+    //对返回键进行监听
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Snackbar.make(schulteView, R.string.again_exit, Snackbar.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            isCloseApp = true;
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isCloseApp) {
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
     }
 

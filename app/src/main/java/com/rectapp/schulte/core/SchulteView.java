@@ -17,7 +17,7 @@ import java.util.Collections;
 
 public class SchulteView extends RelativeLayout {
 
-    private int mColumn = 3;
+    private int mColumn = 5;
     private int mMargin = 2;
     private int mPadding;
     private boolean once;
@@ -88,7 +88,6 @@ public class SchulteView extends RelativeLayout {
     public interface GameCallBack {
         void onSuccess(int column, long time);
     }
-
 
     public void rePlay() {
         Collections.shuffle(mNums);

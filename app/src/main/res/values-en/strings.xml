@@ -3,7 +3,7 @@
     <string name="app_name">Schulte</string>
 
     <string name="level">level</string>
-    <string name="time">time（ms）</string>
+    <string name="time">time</string>
     <string name="date">date</string>
     <string name="no_history">no history yet</string>
     <string name="refresh_best">congratulations! Refreshed the best</string>
@@ -12,6 +12,9 @@
     <string name="next">next</string>
     <string name="cancel">Cancel</string>
     <string name="sure">OK</string>
+    <string name="complete">Success~</string>
+    <string name="replay">replay</string>
+    <string name="again_exit">press again to exit</string>
 
     <array name="level">
         <item>9</item>

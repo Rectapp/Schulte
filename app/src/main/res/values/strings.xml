@@ -2,7 +2,7 @@
     <string name="app_name">注意力训练</string>
 
     <string name="level">格子</string>
-    <string name="time">耗时（毫秒）</string>
+    <string name="time">耗时</string>
     <string name="date">日期</string>
     <string name="no_history">还没有训练记录哦</string>
     <string name="refresh_best">恭喜您！刷新了记录</string>
@@ -11,6 +11,9 @@
     <string name="next">升级</string>
     <string name="cancel">取消</string>
     <string name="sure">确定</string>
+    <string name="complete">完成了一次练习~</string>
+    <string name="replay">再来一次</string>
+    <string name="again_exit">再按一次退出</string>
 
     <array name="level">
         <item>9格</item>
